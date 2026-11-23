@@ -10,7 +10,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+// The grader sets MAKEFUN_OUTPUT_DIR; a --output <dir> flag overrides it.
+const flagAt = process.argv.indexOf('--output');
+const outDir =
+  (flagAt !== -1 && process.argv[flagAt + 1]) || process.env.MAKEFUN_OUTPUT_DIR || '/output';
 mkdirSync(outDir, { recursive: true });
 const bytes = readFileSync(join(here, 'entry.png'));
 writeFileSync(join(outDir, 'entry.png'), bytes);
